@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+:root {
+  /* Color Palette */
+  --color-primary: #007bff;
+  --color-secondary: #6c757d;
+  
+  /* Spacing Scale */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+}
