@@ -112,7 +112,7 @@ const values = [
             </div>
           </div>
           <div class="relative">
-            <div class="aspect-video rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex items-center justify-center">
+            <div class="aspect-video rounded-2xl bg-linear-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex items-center justify-center">
               <UIcon name="i-lucide-car" class="size-32 text-primary" />
             </div>
           </div>
