@@ -12,4 +12,17 @@
   
   /* Typography */
   --font-sans: 'Inter', sans-serif;
+
+  /* Semantic Colors */
+  --bg-default: #ffffff;
+  --bg-elevated: #f8fafc;
+  --text-highlighted: #0f172a;
+  --text-muted: #64748b;
+}
+
+.dark {
+  --bg-default: #020617;
+  --bg-elevated: #1e293b;
+  --text-highlighted: #f8fafc;
+  --text-muted: #94a3b8;
 }

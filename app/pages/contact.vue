@@ -82,7 +82,7 @@ const faqs = [
 <template>
   <div class="min-h-screen">
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-24">
+    <section class="relative bg-linear-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-24">
       <div class="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
       <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h1 class="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>

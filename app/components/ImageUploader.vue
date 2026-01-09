@@ -1,65 +1,51 @@
 <script setup>
-import { useDropZone } from '@vueuse/core'
-
 const props = defineProps({
-  modelValue: []
+  modelValue: {
+    type: Array,
+    default: () => []
+  }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const dropZoneRef = ref()
-const previews = ref([])
-
-const onDrop = (files) => {
-  if (!files) return
-  const newFiles = [...props.modelValue, ...files]
-  emit('update:modelValue', newFiles)
-  generatePreviews(files)
-}
-
-const { isOverDropZone } = useDropZone(dropZoneRef, {
-  onDrop,
-  dataTypes: ['image/jpeg', 'image/png', 'image/webp']
-})
+const fileInput = ref(null)
 
 const onFileSelect = (e) => {
-  const input = e.target
-  if (input.files) {
-    onDrop(Array.from(input.files))
-  }
+  const files = Array.from(e.target.files || [])
+  if (files.length === 0) return
+  
+  // Create object URLs for preview
+  const newFiles = files.map(file => ({
+    file,
+    preview: URL.createObjectURL(file),
+    name: file.name,
+    size: (file.size / (1024 * 1024)).toFixed(2) + ' MB'
+  }))
+
+  emit('update:modelValue', [...props.modelValue, ...newFiles])
 }
 
 const removeFile = (index) => {
   const newFiles = [...props.modelValue]
+  // Revoke object URL to avoid memory leaks
+  if (newFiles[index].preview) {
+    URL.revokeObjectURL(newFiles[index].preview)
+  }
   newFiles.splice(index, 1)
   emit('update:modelValue', newFiles)
-  
-  const newPreviews = [...previews.value]
-  newPreviews.splice(index, 1)
-  previews.value = newPreviews
 }
 
-const generatePreviews = (files) => {
-  files.forEach(file => {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        previews.value.push(e.target.result)
-      }
-    }
-    reader.readAsDataURL(file)
-  })
+const triggerInput = () => {
+  fileInput.value?.click()
 }
 </script>
 
 <template>
-  <div class="space-y-4">
-    <!-- Drop Zone -->
+  <div class="space-y-6">
+    <!-- Drop Zone / Upload Button -->
     <div 
-      ref="dropZoneRef"
-      class="border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer"
-      :class="isOverDropZone ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' : 'border-gray-300 dark:border-gray-700 hover:border-primary-400'"
-      @click="$refs.fileInput.click()"
+      class="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-colors cursor-pointer group"
+      @click="triggerInput"
     >
       <input 
         ref="fileInput"
@@ -69,29 +55,32 @@ const generatePreviews = (files) => {
         class="hidden" 
         @change="onFileSelect"
       />
-      <div class="flex flex-col items-center gap-2">
-        <UIcon name="i-heroicons-cloud-arrow-up" class="w-10 h-10 text-gray-400" />
-        <p class="text-gray-600 dark:text-gray-300 font-medium">
-          Click to upload or drag and drop
-        </p>
-        <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (max. 800x400px)</p>
+      <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <UIcon name="i-lucide-camera" class="w-8 h-8 text-primary-600 dark:text-primary-400" />
       </div>
+      <h3 class="text-lg font-semibold text-highlighted mb-1">Click to upload photos</h3>
+      <p class="text-sm text-muted">SVG, PNG, JPG or GIF (max. 5MB each)</p>
     </div>
 
-    <!-- Preview Grid -->
-    <div v-if="previews.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div 
-        v-for="(preview, index) in previews" 
-        :key="index" 
-        class="relative group aspect-4/3 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-      >
-        <img :src="preview" class="h-full w-full object-cover" />
-        <button 
-          class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-          @click.stop="removeFile(index)"
-        >
-          <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
-        </button>
+    <!-- Previews -->
+    <div v-if="modelValue.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div v-for="(file, index) in modelValue" :key="index" class="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 bg-elevated">
+        <div class="aspect-square">
+          <img :src="file.preview" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <UButton 
+            icon="i-lucide-trash-2" 
+            color="red" 
+            variant="solid" 
+            size="xs"
+            square
+            @click.stop="removeFile(index)"
+          />
+        </div>
+        <div class="p-2 text-xs truncate text-muted">
+          {{ file.name }}
+        </div>
       </div>
     </div>
   </div>

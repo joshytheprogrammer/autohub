@@ -6,7 +6,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Add custom colors here matching the design system
+        // Semantic color mapping
+        elevated: 'var(--color-elevated)',
+      },
+      backgroundColor: {
+        elevated: 'var(--bg-elevated)',
+        default: 'var(--bg-default)',
+      },
+      textColor: {
+        highlighted: 'var(--text-highlighted)',
+        muted: 'var(--text-muted)',
       }
     }
   }

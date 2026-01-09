@@ -23,7 +23,7 @@ const handleLogin = async () => {
 <template>
   <div class="min-h-screen flex">
     <!-- Left side - Branding / Image -->
-    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
+    <div class="hidden lg:flex lg:w-1/2 bg-linear-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
       <div class="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
       <div class="relative z-10 flex flex-col justify-between p-12 text-white">
         <div>
